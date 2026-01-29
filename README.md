@@ -23,8 +23,10 @@
 ## 安装
 
 ```bash
-npm install
-# 或
+git clone https://github.com/BytePioneer-AI/moltbot-china.git
+cd moltbot-china
+
+npm i -g pnpm
 pnpm install
 ```
 
@@ -37,6 +39,9 @@ pnpm install
 
 ```json
 {
+  "session": {
+    "dmScope": "per-peer"
+  },
   "plugins": {
     "load": {
       "paths": ["/path/to/moltbot-china/extensions/dingtalk"]
@@ -60,13 +65,44 @@ pnpm install
 }
 ```
 
-配置说明：
-- `clientId` / `clientSecret`：**必填**，钉钉开放平台应用凭证（其他配置项可使用默认值）
-- `dmPolicy`：私聊策略 - `open`（任何人）/ `pairing`（需先配对）/ `allowlist`（白名单）
-- `groupPolicy`：群聊策略 - `open`（任何群）/ `allowlist`（白名单群）
-- `requireMention`：群聊中是否需要 @机器人 才响应
-- `allowFrom`：私聊白名单用户 ID 列表
-- `groupAllowFrom`：群聊白名单群 ID 列表
+### 钉钉渠道配置
+
+| 配置项 | 必填 | 默认值 | 说明 |
+|--------|:----:|--------|------|
+| `clientId` | ✅ | - | 钉钉开放平台应用 AppKey |
+| `clientSecret` | ✅ | - | 钉钉开放平台应用 AppSecret |
+| `dmPolicy` | | `pairing` | 私聊策略：`open`（任何人）/ `pairing`（需配对）/ `allowlist`（白名单） |
+| `groupPolicy` | | `allowlist` | 群聊策略：`open`（任何群）/ `allowlist`（白名单群）/ `disabled`（禁用） |
+| `requireMention` | | `true` | 群聊中是否需要 @机器人 才响应 |
+| `allowFrom` | | `[]` | 私聊白名单用户 ID 列表 |
+| `groupAllowFrom` | | `[]` | 群聊白名单群 ID 列表 |
+
+### 会话配置（重要）
+
+`session.dmScope` 控制不同用户的会话隔离方式：
+
+| 值 | 说明 |
+|----|------|
+| `main` | 默认值，所有用户共享同一会话（不推荐多用户场景） |
+| `per-peer` | **推荐**，按用户 ID 隔离，每个用户独立会话 |
+| `per-channel-peer` | 按渠道+用户隔离，适合多渠道多用户场景 |
+| `per-account-channel-peer` | 最细粒度，按账户+渠道+用户隔离 |
+
+
+### 跨渠道身份关联（可选）
+
+如果同一用户在多个渠道使用，可以通过 `session.identityLinks` 关联身份，共享会话历史：
+
+```json
+{
+  "session": {
+    "dmScope": "per-peer",
+    "identityLinks": {
+      "alice": ["dingtalk:035004583157903146", "telegram:123456789"]
+    }
+  }
+}
+```
 
 ## License
 

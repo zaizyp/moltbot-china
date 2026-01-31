@@ -1,20 +1,6 @@
 # 钉钉渠道配置指南
 
-## 一、安装 OpenClaw
-
-### 1. 安装 OpenClaw
-
-```bash
-npm install -g openclaw@latest
-```
-
-### 2. 安装钉钉插件
-
-```bash
-openclaw plugins install @openclaw-china/channels
-```
-
-## 二、获取钉钉凭证
+## 一、获取钉钉凭证
 
 ### 1. 创建企业
 
@@ -79,6 +65,24 @@ openclaw plugins install @openclaw-china/channels
 ![Permission Apply](../../images/dingtalk_permission_apply.png)
 
 > 如果未开启权限或不启用 AI Card，也不影响正常对话；系统会回退到普通消息，并在日志中给出权限申请指引链接。
+
+---
+
+## 二、安装 OpenClaw
+
+### 1. 安装 OpenClaw
+
+```bash
+npm install -g openclaw@latest
+```
+
+### 2. 安装钉钉插件
+
+```bash
+openclaw plugins install @openclaw-china/channels
+```
+
+---
 
 ## 三、配置与启动
 

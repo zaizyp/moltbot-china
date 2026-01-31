@@ -41,6 +41,8 @@
 
 > 飞书、企业微信保姆文档编写中，现在最容易配置的是钉钉，建议先尝试钉钉。
 
+#### 方式一：从 npm 安装
+
 **安装统一包（包含所有渠道）**
 
 ```bash
@@ -59,6 +61,19 @@ openclaw plugins install @openclaw-china/feishu
 
 ```bash
 openclaw plugins install @openclaw-china/wecom
+```
+
+
+#### 方式二：从源码安装（全平台通用）
+
+> ⚠️ **Windows 用户注意**：由于 OpenClaw 存在 Windows 兼容性问题（`spawn npm ENOENT`），npm 安装方式暂不可用，请使用方式二。
+
+```bash
+git clone https://github.com/BytePioneer-AI/moltbot-china.git
+cd moltbot-china
+pnpm install
+pnpm build
+openclaw plugins install -l ./packages/channels
 ```
 
 > ℹ️ 如果你使用的是旧名称 **clawbot**，请使用 `@openclaw-china/channels@0.1.12`。
@@ -222,7 +237,7 @@ openclaw plugins install -l ./packages/channels
 对OpenClaw用法、插件感兴趣的可以加群交流。
 欢迎同学们一起开发~
 
-<img width="1222" height="1707" alt="4d16a9f91778b4ad0153c40733ae3042" src="https://github.com/user-attachments/assets/563160be-78ac-4cd5-b01c-d83c77e5e4b8" />
+<img width="611" height="854" alt="4d16a9f91778b4ad0153c40733ae3042" src="https://github.com/user-attachments/assets/563160be-78ac-4cd5-b01c-d83c77e5e4b8" />
 
 
 ## License

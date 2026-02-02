@@ -351,7 +351,8 @@ export async function handleWecomAppWebhookRequest(req: IncomingMessage, res: Se
 
   const primary = targets[0]!;
   const logger = buildLogger(primary);
-  logger.debug(`incoming ${req.method} request on ${path} (timestamp=${timestamp}, nonce=${nonce})`);
+  // 调试日志：仅在需要排查问题时启用
+  // logger.debug(`incoming ${req.method} request on ${path} (timestamp=${timestamp}, nonce=${nonce})`);
 
   // GET 请求 - URL 验证
   if (req.method === "GET") {
@@ -431,7 +432,8 @@ export async function handleWecomAppWebhookRequest(req: IncomingMessage, res: Se
     msgSignature = xmlData.MsgSignature ?? signature;
     msgTimestamp = xmlData.TimeStamp ?? timestamp;
     msgNonce = xmlData.Nonce ?? nonce;
-    logger.debug(`parsed XML: encrypt=${encrypt.slice(0, 20)}..., sig=${msgSignature.slice(0, 10)}...`);
+    // 调试日志：仅在需要排查问题时启用
+    // logger.debug(`parsed XML: encrypt=${encrypt.slice(0, 20)}..., sig=${msgSignature.slice(0, 10)}...`);
   } else {
     // JSON 格式 - 兼容旧格式
     try {

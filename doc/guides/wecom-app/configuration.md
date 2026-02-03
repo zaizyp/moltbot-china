@@ -4,25 +4,88 @@
 
 ## 自建应用 vs 智能机器人
 
-| 功能 | 智能机器人 (wecom) | 自建应用 (wecom-app) |
-|------|:------------------:|:--------------------:|
-| 被动回复消息 | ✅ | ✅ |
-| 主动发送消息 | ❌ | ✅ |
-| 需要企业认证 | ❌ | ❌ |
-| 需要 corpSecret | ❌ | ✅ |
-| 需要 IP 白名单 | ❌ | ✅ |
-| 配置复杂度 | 简单 | 中等 |
+| 功能            | 智能机器人 (wecom) | 自建应用 (wecom-app) |
+| :-------------- | :----------------: | :------------------: |
+| 被动回复消息    |         ✅         |          ✅          |
+| 主动发送消息    |         ❌         |          ✅          |
+| 需要企业认证    |         ❌         |          ❌          |
+| 需要 corpSecret |         ❌         |          ✅          |
+| 需要 IP 白名单  |         ❌         |          ✅          |
+| 配置复杂度      |        简单        |         中等         |
 
 **推荐使用自建应用的场景**：
+
 - 需要主动推送消息给用户
 - 需要更灵活的消息发送能力
 - 需要调用企业微信 API
+
+## 效果展示
+
+<div align="center">
+
+### 微信入口
+
+![微信界面](image/configuration/1770106970867.png)
+![进入后](image/configuration/1770106983366.png)
+
+---
+
+### 对话效果
+
+![对话效果](image/configuration/1770107297696.png)
+
+</div>
+
+---
 
 ## 前置条件
 
 1. 一个企业微信账号（可使用个人注册的企业）
 2. 公网可访问的 HTTPS 服务器（用于接收回调）
 3. OpenClaw 已安装并运行
+4. Node.js 和 pnpm（用于构建插件）
+
+---
+
+## 步骤零：安装 wecom-app 插件
+
+### 1. 克隆代码仓库
+
+```bash
+cd ~/.openclaw/extensions
+git clone https://github.com/RainbowRain9/openclaw-china.git
+```
+
+### 2. 进入插件目录并安装依赖
+
+```bash
+cd ~/.openclaw/extensions/openclaw-china/extensions/wecom-app
+pnpm install
+```
+
+### 3. 构建插件
+
+```bash
+pnpm build
+```
+
+### 4. 安装到 OpenClaw
+
+```bash
+openclaw plugins install -l ~/.openclaw/extensions/openclaw-china/extensions/wecom-app
+```
+
+> **提示**：`-l` 参数表示链接模式安装，修改源码后无需重新安装，只需重启 Gateway 即可生效。
+
+### 5. 验证安装
+
+```bash
+openclaw plugins list
+```
+
+确认 `@openclaw-china/wecom-app` 出现在插件列表中。
+
+---
 
 ## 步骤一：创建自建应用
 
@@ -34,10 +97,17 @@
 
 1. 点击左侧菜单「应用管理」
 2. 在「自建」区域点击「创建应用」
+
+   ![创建应用入口](image/configuration/1770105395578.png)
+
 3. 填写应用信息：
+
    - **应用名称**：例如 "AI 助手"
    - **应用 logo**：上传一个图标
    - **可见范围**：选择可以使用该应用的部门/成员
+
+  ![填写应用信息](image/configuration/1770105469298.png)
+
 4. 点击「创建应用」
 
 ### 3. 获取应用凭证
@@ -47,11 +117,20 @@
 - **AgentId**：应用的唯一标识（如 `1000002`）
 - **Secret**：点击查看获取（这就是 `corpSecret`）
 
+![获取应用凭证](image/configuration/1770105739884.png)
+
+
 ### 4. 获取企业 ID
 
 1. 点击左侧菜单「我的企业」
 2. 在「企业信息」页面底部找到「企业 ID」
 3. 记录这个 ID（这就是 `corpId`）
+
+
+![获取企业 ID](image/configuration/1770105784942.png)
+
+
+---
 
 ## 步骤二：配置接收消息服务器
 
@@ -66,13 +145,21 @@
 - **Token**：自定义一个字符串，例如 `your-random-token`
 - **EncodingAESKey**：点击「随机获取」生成 43 位字符
 
+![配置接收消息](image/configuration/1770106232112.png)
+
 > ⚠️ **重要**：先配置好 OpenClaw，再点击「保存」，否则验证会失败。
+
+![保存配置](image/configuration/1770106267509.png)
 
 ### 3. 配置 IP 白名单
 
 在应用详情页的「企业可信 IP」设置中，添加你服务器的公网 IP 地址。
 
+![配置 IP 白名单](image/configuration/1770106297408.png)
+
 > 💡 如果不知道服务器 IP，可以先尝试发送消息，查看错误日志获取 IP。
+
+---
 
 ## 步骤三：配置 OpenClaw
 
@@ -126,22 +213,26 @@ openclaw config set channels.wecom-app.agentId 1000002
 
 ### 配置说明
 
-| 字段 | 必填 | 说明 |
-|------|:----:|------|
-| `enabled` | ✅ | 是否启用该渠道 |
-| `webhookPath` | ✅ | 回调路径，需与企业微信后台配置一致 |
-| `token` | ✅ | 消息校验 Token，需与企业微信后台配置一致 |
-| `encodingAESKey` | ✅ | 消息加密密钥（43 位），需与企业微信后台配置一致 |
-| `corpId` | ✅ | 企业 ID |
-| `corpSecret` | ✅ | 应用的 Secret |
-| `agentId` | ✅ | 应用的 AgentId |
-| `welcomeText` | ❌ | 用户首次进入时的欢迎语 |
+| 字段               | 必填 | 说明                                            |
+| :----------------- | :--: | :---------------------------------------------- |
+| `enabled`        |  ✅  | 是否启用该渠道                                  |
+| `webhookPath`    |  ✅  | 回调路径，需与企业微信后台配置一致              |
+| `token`          |  ✅  | 消息校验 Token，需与企业微信后台配置一致        |
+| `encodingAESKey` |  ✅  | 消息加密密钥（43 位），需与企业微信后台配置一致 |
+| `corpId`         |  ✅  | 企业 ID                                         |
+| `corpSecret`     |  ✅  | 应用的 Secret                                   |
+| `agentId`        |  ✅  | 应用的 AgentId                                  |
+| `welcomeText`    |  ❌  | 用户首次进入时的欢迎语                          |
+
+---
 
 ## 步骤四：重启 Gateway
 
 ```bash
 openclaw gateway restart
 ```
+
+---
 
 ## 步骤五：验证配置
 
@@ -157,6 +248,8 @@ openclaw gateway restart
 2. 发送一条消息
 3. 查看 OpenClaw 日志确认消息接收
 4. 等待 AI 回复
+
+---
 
 ## 常见问题
 
@@ -188,6 +281,8 @@ curl ifconfig.me
 - **Token**：可以是任意字符串
 - **EncodingAESKey**：必须是 43 位的 Base64 字符，建议使用企业微信后台的「随机获取」功能
 
+---
+
 ## 高级配置
 
 ### 访问控制
@@ -207,13 +302,13 @@ curl ifconfig.me
 }
 ```
 
-| 字段 | 说明 |
-|------|------|
-| `dmPolicy` | 私聊策略：`open`（任何人）/ `allowlist`（白名单） |
-| `groupPolicy` | 群聊策略：`open`（任何群）/ `allowlist`（白名单）/ `disabled`（禁用） |
-| `requireMention` | 群聊是否需要 @机器人 |
-| `allowFrom` | 私聊白名单用户 ID 列表 |
-| `groupAllowFrom` | 群聊白名单群 ID 列表 |
+| 字段               | 说明                                                                        |
+| :----------------- | :-------------------------------------------------------------------------- |
+| `dmPolicy`       | 私聊策略：`open`（任何人）/ `allowlist`（白名单）                       |
+| `groupPolicy`    | 群聊策略：`open`（任何群）/ `allowlist`（白名单）/ `disabled`（禁用） |
+| `requireMention` | 群聊是否需要 @机器人                                                        |
+| `allowFrom`      | 私聊白名单用户 ID 列表                                                      |
+| `groupAllowFrom` | 群聊白名单群 ID 列表                                                        |
 
 ### 多账户配置
 
@@ -246,6 +341,8 @@ curl ifconfig.me
   }
 }
 ```
+
+---
 
 ## 相关链接
 

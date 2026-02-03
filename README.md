@@ -233,6 +233,32 @@ openclaw config set channels.feishu '{
 openclaw gateway --port 18789 --verbose
 ```
 
+### 4) （可选）安装本仓库自带 Skills
+
+本仓库在 `skills/` 目录下提供了一些可直接复制使用的本地技能包（AgentSkills）。
+
+**安装方式（推荐：Workspace 级）**
+
+把 `skills/<skill-name>` 复制到你的 OpenClaw 工作区：
+
+```bash
+# 在你的项目目录（workspace）下
+mkdir -p ./skills
+cp -a /path/to/openclaw-china/skills/wecom-app-ops ./skills/
+```
+
+**或安装方式（全局）**
+
+```bash
+mkdir -p ~/.openclaw/skills
+cp -a /path/to/openclaw-china/skills/wecom-app-ops ~/.openclaw/skills/
+```
+
+> 说明：Workspace > 全局（`~/.openclaw/skills`）> 内置 skills。复制后无需重启网关。
+
+当前内置示例：
+- `wecom-app-ops`：企业微信自建应用（wecom-app）日常操作指南（target/replyTo/回发图片/录音/文件、OCR/MCP、排障、媒体保留策略）
+
 ## 演示
 
 以下为钉钉渠道效果示例：

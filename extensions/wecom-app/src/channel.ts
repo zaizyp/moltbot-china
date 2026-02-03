@@ -193,14 +193,23 @@ export const wecomAppPlugin = {
         };
       }
 
-      // 解析 to: 格式为 "user:xxx" 或 "group:xxx" 或直接 userId
+      // 解析 to: 支持格式 "wecom-app:user:xxx" / "wecom-app:group:xxx" / "wecom-app:xxx" / "user:xxx" / "group:xxx" / "xxx"
+      let to = params.to;
+
+      // 1. 先剥离 channel 前缀 "wecom-app:"
+      const channelPrefix = "wecom-app:";
+      if (to.startsWith(channelPrefix)) {
+        to = to.slice(channelPrefix.length);
+      }
+
+      // 2. 解析剩余部分: "group:xxx" / "user:xxx" / "xxx"
       let target: { userId?: string; chatid?: string } = {};
-      if (params.to.startsWith("group:")) {
-        target = { chatid: params.to.slice(6) };
-      } else if (params.to.startsWith("user:")) {
-        target = { userId: params.to.slice(5) };
+      if (to.startsWith("group:")) {
+        target = { chatid: to.slice(6) };
+      } else if (to.startsWith("user:")) {
+        target = { userId: to.slice(5) };
       } else {
-        target = { userId: params.to };
+        target = { userId: to };
       }
 
       try {
